@@ -5,46 +5,65 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3001';
 
-const fetchToDos = async (): Promise<TodoItem> => {
+const fetchToDos = async (): Promise<TodoItem[]> => {
   
-  const response = await axios.get<TodoItem>('/todos');
+  const response = await axios.get<TodoItem[]>('/todos');
   return response.data; // when you fetch with axios the respons will often be ´res.data´ even if data is not defined
 }
+ 
 
-const CreateTodo = async (todoitem: TodoItem ):  Promise<TodoItem>  => {
-  const res = await axios.post<TodoItem>('/todos', todoitem);
-  return res.data;
-}
-
-function App() {  
+function App()  {  
   
-  const [todo, setTodo] = useState <TodoItem | undefined>();
-  const [error,setError]= useState <string | undefined> ()
+  const [todoText, setTodoText] = useState<string>('');
+  const [todos, setTodos] = useState <TodoItem[]>([]); 
+  const [error, setError] = useState<string | undefined>();
+
+  const CreateTodo = (todoText: string): void => {
+  
+    const todoItem: TodoItem = {
+      text: todoText,
+      timeStamps: new Date()
+    }
+    axios.post<TodoItem[]>("/todos", todoItem)
+    .then((res) => setTodos(res.data)) //axios uses JSON as default content type.
+  }
   
   useEffect(() => { 
-    fetchToDos().then(setTodo).catch((err) => { 
-      setTodo(undefined)
+    fetchToDos().then(setTodos).catch((err) => { 
+      setTodos([])
       setError('connot find todos')
     })
-  }, [])
+  }, []) 
   
   const output = () => {
-    if (todo) {
-      return todo.text;
-    } else if (error) {
-      return error
+    if (error) {
+      return <div>{error}</div>
+    } else if (todos) {
+      return (
+        <div>
+          {todos.map((item) => {
+            return (
+               <p key={item.text} >{item.text} {/*item.test*/} </p>
+            )
+          })}
+        </div>
+      )
     } else {
-      return 'loading todos'
+      return <div> 'waiting för todos'</div>
     }
   }
-     //https://github.com/Al3za/TypeScript-app-todo.git
+  
   return (  
     <div className="App">
       <header className='App-header' >
       
         {output()}
        
-     </header>
+      </header>
+      <section>
+        <input type="text" value={todoText} onChange={(e)=>setTodoText(e.target.value)} />
+        <button onClick={(e)=>CreateTodo(todoText)}> create todo </button>
+      </section>
     </div>
   );
 }

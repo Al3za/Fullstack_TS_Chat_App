@@ -5,11 +5,11 @@ import Crypto from 'crypto'; //ger en väldig bra random id
 
 const app: Application = express()
 app.use(cors())
-app.use(json())
+app.use(json())  
 
 const port: number = parseInt(process.env.SERVER_PORT || '3001')
 
-const TODO_ITEMS: TodoItem[] = [
+const TODO_ITEMS: TodoItem[] = [  //before was TodoItem en object, but now we choosed to turn that into an array. 
     {
     id: '123',
     text: 'ciao',
@@ -26,7 +26,8 @@ app.post('/todos', (req: Request<TodoItem> , res: Response<TodoItem[]>) => {
     const ItemsTodo = req.body;
     ItemsTodo.id = Crypto.randomUUID();
     console.log(`got new todo item `, ItemsTodo)
-    TODO_ITEMS.push(ItemsTodo) // datan som klienten skickar visar ingen hänsyn till typescript. 
+    TODO_ITEMS.push(ItemsTodo)
+     // datan som klienten skickar visar ingen hänsyn till typescript. 
     //typescript korrigera dig om du skriver nåt som inte passar parameterna, men inte klienten.
     //den som klienten skickar in bli betraktad som vanligt java skript, och bryter typeScript reglerna;
     //res.sendStatus(201) //201 betyder man har skapat nåt nytt, i detta fall en new todos item
