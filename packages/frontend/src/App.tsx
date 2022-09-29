@@ -5,7 +5,7 @@ import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3001';
 
-const fetchToDos = async (): Promise<TodoItem[]> => {
+const fetchToDos = async (): Promise<TodoItem[]> => { //funktionen kommer att returnera en array med todoItems
   
   const response = await axios.get<TodoItem[]>('/todos');
   return response.data; // when you fetch with axios the respons will often be ´res.data´ even if data is not defined
@@ -15,7 +15,7 @@ const fetchToDos = async (): Promise<TodoItem[]> => {
 function App()  {  
   
   const [todoText, setTodoText] = useState<string>('');
-  const [todos, setTodos] = useState <TodoItem[]>([]); 
+  const [todos, setTodos] = useState <TodoItem[]>([]); //det är tack vare det här array som du kan lopa genom data 
   const [error, setError] = useState<string | undefined>();
 
   const CreateTodo = (todoText: string): void => {
@@ -41,9 +41,9 @@ function App()  {
     } else if (todos) {
       return (
         <div>
-          {todos.map((item) => {
+          {todos.map((item,index) => {
             return (
-               <p key={item.text} >{item.text} {/*item.test*/} </p>
+               <p key={index} >{item.text} id is  {index}  {/*item.test*/} </p>
             )
           })}
         </div>
@@ -52,6 +52,7 @@ function App()  {
       return <div> 'waiting för todos'</div>
     }
   }
+
   
   return (  
     <div className="App">
