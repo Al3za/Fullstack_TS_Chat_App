@@ -1,6 +1,9 @@
-export default interface TodoItem {
+ export default interface TodoItem {
     _id? : string, 
     text: string,
-    timeStamps: Date,
-    
+    timeStamps : Date,   
 }
+
+
+
+

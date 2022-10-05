@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import TodoItem from '@app-todo/shared'
 import axios from 'axios';
+import Users from './pages/Users';
 
 axios.defaults.baseURL = 'http://localhost:3001';
 
@@ -14,18 +16,20 @@ const fetchToDos = async (): Promise<TodoItem[]> => { //funktionen kommer att re
 
 function App()  {  
   
-  const [todoText, setTodoText] = useState<string>('');
+  const [todoText, setTodoText] = useState<string>('');//vi tvingar the default värde genom att adddera strängen i parantesen 
   const [todos, setTodos] = useState <TodoItem[]>([]); //det är tack vare det här array som du kan lopa genom data 
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<string>('');
+  const [userName,setUserName]=useState('')
 
-  const CreateTodo = (todoText: string): void => {
+
+  const CreateTodo = async (todoText: string): Promise<void> => {
   
     const todoItem: TodoItem = {
       text: todoText,
       timeStamps: new Date()
-    }
-    axios.post<TodoItem[]>("/todos", todoItem)
-    .then((res) => setTodos(res.data)) //axios uses JSON as default content type.
+    };
+    const getpostarray = await axios.post<TodoItem[]>("/todos", todoItem);
+    setTodos(getpostarray.data) //axios uses JSON as default content type.
   }
   
   useEffect(() => { 
@@ -43,27 +47,49 @@ function App()  {
         <div>
           {todos.map((item,index) => {
             return (
-               <p key={index} >{item.text} id is  {index}  {/*item.test*/} </p>
+              <div key={index} >
+                <p>{item.text}</p>
+                
+              </div>
             )
           })}
         </div>
       )
     } else {
-      return <div> 'waiting för todos'</div>
+      return <p> 'waiting för todos'</p>
     }
   }
 
-  
+  function addUser(item:string|undefined) {
+    if (!item || item===' ' ) {
+      setUserName('ange ett giltig user')
+    } else {
+      return setUserName(item)
+    }
+  };
+
+
   return (  
+
+
     <div className="App">
+
+      <Routes>
+        <Route path='/test' element={< Users  onSend={addUser} />}  />
+      </Routes>
+
       <header className='App-header' >
       
         {output()}
        
+       {userName}
       </header>
+       
       <section>
+       
         <input type="text" value={todoText} onChange={(e)=>setTodoText(e.target.value)} />
-        <button onClick={(e)=>CreateTodo(todoText)}> create todo </button>
+        <button onClick={(e) => CreateTodo(todoText)}> create todo </button>
+        
       </section>
     </div>
   );
