@@ -4,9 +4,10 @@ import TodoItem from '@app-todo/shared'
 const TodoSchema = new Schema({
     text: String,
     timeStamps: Date
-})
+}); //den 'type' of data är MongoDb data och stämmer inte med 'TodoItem' data.
 
-const TodoModel = model<TodoItem>('todoItem',TodoSchema)
+const TodoModel = model<TodoItem>('todoItem', TodoSchema);
+//med model<TodoItem>, förvandlar typen av data, d.v.s från MongoDb type till typescript interface TodoItem; 
 
 export const setUpMongDB = async (url:string): Promise<void> => {
    await connect(url)
