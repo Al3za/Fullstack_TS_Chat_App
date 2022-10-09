@@ -58,9 +58,6 @@ const LoadMongoData =  () => {
 
   }
 
-    
- 
-
       return <>
          
         {output()}      
