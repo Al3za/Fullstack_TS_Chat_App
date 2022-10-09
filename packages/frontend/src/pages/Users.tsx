@@ -12,25 +12,22 @@ export default function Users() {
     const [user, setUser] = useState<createUser>();
     const [error,setErr]= useState<string>('')
 
-  const addUser = async (user:string)=>{
-      if (!user) {
-          setErr('ange en valid username')
-      } else {
-          const response = await axios.post<createUser>('/createUser', { user })
-          setUser(response.data)
-          console.log(user)
-                    
-    }
+    const addUser = async (item: string) => {
+    
+            const newUser: createUser = {
+                user: item
+            }
+            const response = await axios.post<createUser>('/createUser', newUser)
+             setUser(response.data)
+            //console.log(response.data)
+            /* when you have to send data to another server via axios,
+               you have to send it as an object to get the body */
+            
   };
 
 
     return (
         <>
-            {/* <h1> ange din användarnamn för att kunna  delta i chatten </h1>
-            <p></p>
-
-            ange användarnamn <input type="text" value={user} onChange={(e)=>setUser(e.target.value)} />
-             <button  onClick={(e)=>  props.onSend(user) } > send  </button>  */}
             
             <h1> ange din användarnamn för att kunna  delta i chatten </h1>
             <p></p>
