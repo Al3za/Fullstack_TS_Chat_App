@@ -4,12 +4,12 @@ import SaveUser  from '../models/CreateUserModel';
 
 const Users_controller = express.Router();
 
-Users_controller.post('/', async (req: Request<createUser>, res: Response<string>) => {
+Users_controller.post('/', async (req: Request<createUser>, res: Response<createUser|string>) => {
  
     const userBody = req.body;
     try {
         await SaveUser(userBody),
-        res.send(`  hej ${userBody.user}`)
+        res.send(userBody.user)
     } catch {
         res.send('this Username is already taken, please choose another one');
     }
