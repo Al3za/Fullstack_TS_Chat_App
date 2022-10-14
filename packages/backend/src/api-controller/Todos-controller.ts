@@ -1,4 +1,4 @@
-import TodoItem from "@app-todo/shared";
+import { TodoItem } from "@app-todo/shared";
 import express, { Router, Request, Response } from "express";
 import { saveTodo, loadTodos, loadItemById } from "../services/Todos_services";
 import { saveTodoItem } from "../models/Todos_repository";
