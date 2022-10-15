@@ -1,3 +1,4 @@
-export default interface createUser {
-    user?:string
-};
+export interface createUser {
+  username: string;
+  password: string;
+}
