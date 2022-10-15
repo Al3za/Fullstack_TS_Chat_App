@@ -7,6 +7,16 @@ import { LoginInput } from "./LoginInput";
 //import CreateTodo from './CreateTodo';
 
 axios.defaults.baseURL = "http://localhost:3001";
+axios.interceptors.request.use((config) => {
+  if (!config.headers) {
+    config.headers = {};
+  }
+  const jwt = localStorage.getItem("jwt");
+  if (jwt) {
+    config.headers["authorization"] = `Bearer ${jwt}`;
+  }
+  return config;
+});
 
 const fetchToDos = async (): Promise<TodoItem[]> => {
   const getTodo = await axios.get<TodoItem[]>("/todos");

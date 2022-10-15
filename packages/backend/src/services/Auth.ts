@@ -23,26 +23,31 @@ export const AutenticateToken = (
   next: NextFunction
 ) => {
   const token: string | undefined = req.header("authorization")?.split(" ")[1];
-
+  //console.log(token, "ale");
   if (token) {
     try {
-      const decoded = jsonwebtoken.verify(token, secret) as TokenPayload;
+      const decoded = jsonwebtoken.verify(token, secret) as TokenPayload; // verify är det du gör i Jwt.io den verifierar att token och secret stämmer.
       req.jwt = decoded;
+      //console.log(decoded);
     } catch (err) {
-      res.clearCookie(JWT_COCKIE_NAME);
       return res.sendStatus(403); // bad token
     }
   } else {
     return res.sendStatus(401); // not authorized
   }
+
+  next();
 };
 
-const loginUser = (req: JwtRequest<credentials>, res: Response) => {
+export const loginUser = (req: JwtRequest<credentials>, res: Response) => {
+  // const { username, password } = req.body;
   const credentials = req.body;
   const token = jsonwebtoken.sign(
-    { sub: credentials.username, name: "ale" },
+    { sub: credentials.username, name: "alex" } /*{ username, password }*/,
     secret,
-    { expiresIn: "1800s" }
+    {
+      expiresIn: "1800s",
+    }
   );
   res.send(token);
   return res.sendStatus(200);
