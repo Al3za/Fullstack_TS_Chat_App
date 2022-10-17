@@ -1,26 +1,15 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-//import { createUser } from "@app-todo/shared";
+import { useState, useEffect } from "react";
 
-export const CreateUser = () => {
+export const UserLogin = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [resp, setResp] = useState<string>("");
 
-  const navigate = useNavigate();
-
-  const createUser = async () => {
-    const create = await axios.post("/createUser", { username, password });
-    if (create.data === "ok") {
-      navigate("/todos");
-    }
-    setResp(create.data);
-  };
+  const LoginUser = () => {};
 
   return (
     <div className="createUser">
-      <h1> Sign in </h1>
+      <h1> Log in </h1>
       Username{" "}
       <input
         type="text"
@@ -34,7 +23,7 @@ export const CreateUser = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={createUser}> send </button>
+      <button onClick={LoginUser}> send </button>
       {resp && resp}
     </div>
   );

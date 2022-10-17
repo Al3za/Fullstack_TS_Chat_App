@@ -5,6 +5,7 @@ import LoadMongoData from './pages/LoadMongoData';
 import { myGlobalContext } from './pages/Context_learning'
 import Users from './pages/Users';
 import { CreateUser } from './pages/CreateUser'
+import { UserLogin } from './pages/UserLogin';
 
 
 function App()  {  
@@ -30,7 +31,8 @@ function App()  {
        <myGlobalContext.Provider  value={{userName,setUser}} >
         <Routes>
           <Route path='/' element={< CreateUser />} />
-         <Route path='/login' element={< Users sendUser={addUser} />} />
+          <Route path='/login' element={< UserLogin  />} />
+         <Route path='/testLogin' element={< Users sendUser={addUser} />} />
         <Route path='/todos' element= <header className='App-header' > {<
            LoadMongoData  />} </header> />
         </Routes>

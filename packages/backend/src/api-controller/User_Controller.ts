@@ -1,22 +1,22 @@
 import express, { Request, Response } from "express";
 import { createUser } from "@app-todo/shared";
 
-import SaveUser from "../models/CreateUserModel";
+import { SaveUser } from "../models/CreateUserModel";
 
 const Users_controller = express.Router();
 
 Users_controller.post(
-  "/",
+  "/createUser",
   async (req: Request<createUser>, res: Response<createUser | string>) => {
-    //const {username,password} = req.body;
     const userbody = req.body;
-    console.log(userbody);
+    //console.log(userbody);
     try {
-      await SaveUser(userbody), res.send("lyckad");
+      await SaveUser(userbody), res.send("ok");
     } catch {
-      res.send("this Username is already taken, please choose another one");
+      res.send("skicka giltig data");
     }
   }
+  // }
 );
 
 export default Users_controller;

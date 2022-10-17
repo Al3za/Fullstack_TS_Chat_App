@@ -1,6 +1,7 @@
 import { credentials } from "@app-todo/shared";
 import { NextFunction, Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
+import { staticsLogin } from "../models/CreateUserModel";
 require("dotenv").config();
 //console.log(process.env.SECRET_KEY);
 
@@ -23,12 +24,11 @@ export const AutenticateToken = (
   next: NextFunction
 ) => {
   const token: string | undefined = req.header("authorization")?.split(" ")[1];
-  //console.log(token, "ale");
   if (token) {
     try {
       const decoded = jsonwebtoken.verify(token, secret) as TokenPayload; // verify är det du gör i Jwt.io den verifierar att token och secret stämmer.
       req.jwt = decoded;
-      //console.log(decoded);
+      //console.log("hej", req.jwt.sub);
     } catch (err) {
       return res.sendStatus(403); // bad token
     }
@@ -39,16 +39,31 @@ export const AutenticateToken = (
   next();
 };
 
-export const loginUser = (req: JwtRequest<credentials>, res: Response) => {
-  // const { username, password } = req.body;
+export const loginUser = async (
+  req: JwtRequest<credentials>,
+  res: Response
+) => {
   const credentials = req.body;
-  const token = jsonwebtoken.sign(
-    { sub: credentials.username, name: "alex" } /*{ username, password }*/,
-    secret,
-    {
-      expiresIn: "1800s",
-    }
+
+  const getUser = await staticsLogin(
+    credentials.username,
+    credentials.password
   );
-  res.send(token);
-  return res.sendStatus(200);
+  if (getUser) {
+    console.log("good user", getUser);
+    const token = jsonwebtoken.sign(
+      { sub: credentials.username, name: "alex" } /*{ username, password }*/,
+      secret,
+      {
+        expiresIn: "1800s",
+      }
+    );
+    console.log(token);
+    res.send(token);
+  } else {
+    res.sendStatus(403);
+    console.log("wrong user");
+  }
+
+  //res.sendStatus(200);
 };

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { TodoItem } from "@app-todo/shared";
 import { UseGlobalContext } from "../pages/Context_learning";
 import { LoginInput } from "./LoginInput";
 
-//import CreateTodo from './CreateTodo';
-
 axios.defaults.baseURL = "http://localhost:3001";
+
 axios.interceptors.request.use((config) => {
   if (!config.headers) {
     config.headers = {};
@@ -93,7 +93,9 @@ const LoadMongoData = () => {
       username: username,
       password: password,
     });
-    localStorage.setItem("jwt", loginResponse.data);
+    const token = loginResponse.data;
+    console.log(token, "token here");
+    localStorage.setItem("jwt", token);
     setLoggedIn(true);
     setError("");
     const response = await axios.get<TodoItem[]>("/todos");
@@ -114,6 +116,11 @@ const LoadMongoData = () => {
         onChange={(e) => setTodoText(e.target.value)}
       />
       <button onClick={(e) => addNewTodo(TodoTex)}>send</button>
+      <Link to={"/"}>
+        <button> back sign in </button>
+      </Link>
+
+      <button onClick={(e) => setLoggedIn(false)}> logg in </button>
     </>
   );
 };
