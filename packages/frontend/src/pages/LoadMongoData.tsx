@@ -103,25 +103,30 @@ const LoadMongoData = () => {
   };
 
   return (
-    <>
+    <div>
       {isLoggedIn ? (
-        <TodoList todos={todos} error={error} />
+        <div className="App-header">
+          <TodoList todos={todos} error={error} />
+          <input
+            type="string"
+            value={TodoTex}
+            onChange={(e) => setTodoText(e.target.value)}
+          />
+          <button onClick={(e) => addNewTodo(TodoTex)}>send</button>
+        </div>
       ) : (
-        <LoginInput onLogin={performLogin} />
+        <div className="Logininput">
+          <LoginInput onLogin={performLogin} />
+        </div>
       )}
-
-      <input
-        type="string"
-        value={TodoTex}
-        onChange={(e) => setTodoText(e.target.value)}
-      />
-      <button onClick={(e) => addNewTodo(TodoTex)}>send</button>
       <Link to={"/"}>
-        <button> back sign in </button>
-      </Link>
-
-      <button onClick={(e) => setLoggedIn(false)}> logg in </button>
-    </>
+        <button className="link"> back sign in </button>
+      </Link>{" "}
+      <br /> <br />
+      <button className="link" onClick={(e) => setLoggedIn(false)}>
+        back to logg in
+      </button>
+    </div>
   );
 };
 export default LoadMongoData;
