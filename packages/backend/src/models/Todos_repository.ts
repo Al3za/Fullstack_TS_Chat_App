@@ -1,5 +1,5 @@
 import { connect, Schema, model } from "mongoose";
-import TodoItem from "@app-todo/shared";
+import { TodoItem } from "@app-todo/shared";
 
 const TodoSchema = new Schema({
   user: String,

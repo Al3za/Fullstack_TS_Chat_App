@@ -1,27 +1,62 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import TodoItem from "@app-todo/shared";
+import { TodoItem } from "@app-todo/shared";
 import { UseGlobalContext } from "../pages/Context_learning";
-
-//import CreateTodo from './CreateTodo';
+import { LoginInput } from "./LoginInput";
 
 axios.defaults.baseURL = "http://localhost:3001";
+
+axios.interceptors.request.use((config) => {
+  if (!config.headers) {
+    config.headers = {};
+  }
+  const jwt = localStorage.getItem("jwt");
+  if (jwt) {
+    config.headers["authorization"] = `Bearer ${jwt}`;
+  }
+  return config;
+});
 
 const fetchToDos = async (): Promise<TodoItem[]> => {
   const getTodo = await axios.get<TodoItem[]>("/todos");
   return getTodo.data;
 };
 
+const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
+  if (error) {
+    return <div>{error}</div>;
+  } else if (todos) {
+    return (
+      <div>
+        {todos.map((item, index) => {
+          return (
+            <div className="render" key={index}>
+              <p>{item.text}</p>
+              <p>{"från : " + item.user}</p>
+              <p>
+                {item.datum} {item.hour}
+              </p>
+              <br />
+            </div>
+          );
+        })}
+      </div>
+    );
+  } else {
+    return <p> 'waiting för todos'</p>;
+  }
+};
+
 const LoadMongoData = () => {
   const { userName } = UseGlobalContext();
   const [TodoTex, setTodoText] = useState<string>("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | undefined>("");
+  const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const intervall = setInterval(() => {
-      let num = 1;
-      console.log((num = num + 1));
       fetchToDos()
         .then(setTodos)
         .catch((err) => {
@@ -31,31 +66,6 @@ const LoadMongoData = () => {
     }, 2000);
     return () => clearInterval(intervall);
   }, []);
-
-  const output = () => {
-    if (error) {
-      return <div>{error}</div>;
-    } else if (todos) {
-      return (
-        <div>
-          {todos.map((item, index) => {
-            return (
-              <div className="render" key={index}>
-                <p className="ptag">{item.text}</p>
-                <p>{"från : " + item.user}</p>
-                <p>
-                  {item.datum} {item.hour}
-                </p>
-                <br />
-              </div>
-            );
-          })}
-        </div>
-      );
-    } else {
-      return <p> 'waiting för todos'</p>;
-    }
-  };
 
   const addNewTodo = async (item: string) => {
     const now = new Date();
@@ -70,22 +80,53 @@ const LoadMongoData = () => {
       timeStamps: new Date(),
     };
 
-    console.log(newTodo);
+    //console.log(newTodo);
     const response = await axios.post<TodoItem[]>("/todos", newTodo);
     setTodos(response.data);
   };
 
-  return (
-    <>
-      {output()}
+  const performLogin = async (
+    username: string,
+    password: string
+  ): Promise<void> => {
+    const loginResponse = await axios.post("/login", {
+      username: username,
+      password: password,
+    });
+    const token = loginResponse.data;
+    console.log(token, "token here");
+    localStorage.setItem("jwt", token);
+    setLoggedIn(true);
+    setError("");
+    const response = await axios.get<TodoItem[]>("/todos");
+    setTodos(response.data);
+  };
 
-      <input
-        type="string"
-        value={TodoTex}
-        onChange={(e) => setTodoText(e.target.value)}
-      />
-      <button onClick={(e) => addNewTodo(TodoTex)}>send</button>
-    </>
+  return (
+    <div>
+      {isLoggedIn ? (
+        <div className="App-header">
+          <TodoList todos={todos} error={error} />
+          <input
+            type="string"
+            value={TodoTex}
+            onChange={(e) => setTodoText(e.target.value)}
+          />
+          <button onClick={(e) => addNewTodo(TodoTex)}>send</button>
+        </div>
+      ) : (
+        <div className="Logininput">
+          <LoginInput onLogin={performLogin} />
+        </div>
+      )}
+      <Link to={"/"}>
+        <button className="link"> back sign in </button>
+      </Link>{" "}
+      <br /> <br />
+      <button className="link" onClick={(e) => setLoggedIn(false)}>
+        back to logg in
+      </button>
+    </div>
   );
 };
 export default LoadMongoData;

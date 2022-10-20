@@ -1,4 +1,4 @@
-import TodoItem from "@app-todo/shared";
+import { TodoItem } from "@app-todo/shared";
 import {
   loadAllTodoItems,
   loadTodoItem,
