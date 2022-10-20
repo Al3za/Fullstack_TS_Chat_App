@@ -9,7 +9,7 @@ Users_controller.post(
   "/createUser",
   async (req: Request<createUser>, res: Response<createUser | string>) => {
     const userbody = req.body;
-    //console.log(userbody);
+
     try {
       await SaveUser(userbody), res.send("ok");
     } catch {
