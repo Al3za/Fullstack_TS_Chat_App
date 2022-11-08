@@ -3,11 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { staticsLogin } from "../models/CreateUserModel";
 require("dotenv").config();
-//console.log(process.env.SECRET_KEY);
 
 const secret: string = process.env.Token_Secret || "YOURSECRETKEYGOESHERE";
-
-const JWT_COCKIE_NAME = "jwt";
 
 export type TokenPayload = {
   sub: string;
@@ -26,9 +23,9 @@ export const AutenticateToken = (
   const token: string | undefined = req.header("authorization")?.split(" ")[1];
   if (token) {
     try {
-      const decoded = jsonwebtoken.verify(token, secret) as TokenPayload; // verify är det du gör i Jwt.io den verifierar att token och secret stämmer.
+      const decoded = jsonwebtoken.verify(token, secret) as TokenPayload;
+      // verify är det du gör i Jwt.io den verifierar att token och secret stämmer.
       req.jwt = decoded;
-      //console.log("hej", req.jwt.sub);
     } catch (err) {
       return res.sendStatus(403); // bad token
     }
@@ -52,18 +49,15 @@ export const loginUser = async (
   if (getUser) {
     console.log("good user", getUser);
     const token = jsonwebtoken.sign(
-      { sub: credentials.username, name: "alex" } /*{ username, password }*/,
+      { sub: credentials.username, name: "alex" },
       secret,
       {
         expiresIn: "1800s",
       }
     );
-    console.log(token);
     res.send(token);
   } else {
-    res.sendStatus(403);
-    console.log("wrong user");
+    res.sendStatus(401);
+    //res.sendStatus(401) blockera kädjan i LoadMongoData filen, vid performLogin functionen
   }
-
-  //res.sendStatus(200);
 };

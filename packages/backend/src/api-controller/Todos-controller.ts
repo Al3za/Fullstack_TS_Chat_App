@@ -6,17 +6,10 @@ import { JwtRequest } from "../services/Auth";
 
 const todos_Controller = express.Router();
 
-todos_Controller.get("/sale", (req: JwtRequest<object>, res: Response) => {
-  const userrr = req.jwt;
-  console.log(userrr, "ciao");
-  res.send("ciao");
-});
-
 todos_Controller.get(
   "/",
   async (req: JwtRequest<TodoItem>, res: Response<TodoItem[]>) => {
     if (req.jwt) {
-      console.log("ciao", req.jwt.sub);
       res.send(await loadTodos());
     }
   }
@@ -30,21 +23,12 @@ todos_Controller.post(
     } else {
       try {
         req.body.user = req.jwt.sub;
-        console.log(req.body);
+        // vi kan ge till en kommander object body request en istans namn som vi önskar. user i detta fall matchar med mongo user modellen, som i sin tur matchar med vår interface todo-item
         res.send(await saveTodo(req.body));
       } catch (e) {
         res.sendStatus(404);
       }
     }
-  }
-);
-
-todos_Controller.post(
-  "/user",
-  async (req: Request<TodoItem>, res: Response<string>) => {
-    console.log(req.body.user);
-    await saveTodoItem(req.body);
-    res.send("sended user name");
   }
 );
 

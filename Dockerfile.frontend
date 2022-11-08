@@ -1,0 +1,31 @@
+FROM node:16-alpine
+
+WORKDIR /usr/src/app
+# default värde
+
+COPY ./package*.json ./
+COPY ./packages/frontend/package*.json ./packages/frontend/
+COPY ./packages/shared/package*.json ./packages/shared/
+# vi kopiera json filerna från vår project och vi klistrat de i docker;  
+
+RUN npm ci -w packages/frontend
+# vi installera all json filer som vi har kopierat 
+
+COPY  ./packages/frontend/ ./packages/frontend/
+COPY ./packages/shared/ ./packages/shared/
+# vi kopierar resten av koden och klistrar igen till docker under en likadan fil namn
+
+RUN npm run build -w packages/frontend
+# vi omvandlar koden från typescript till JavaScript genom att 'builda' ett till react project i Js ("start": "react-scripts start", 'den bygger hela react app'  "build": "react-scripts build")
+
+EXPOSE 3000  
+# vi anger villken port vår project körs
+
+CMD ["npx","serve","packages/frontend/build"]
+# den comand få appen att köra i vår docker istans. det bygger react app som när vi skapar en : npx create-react-app som finns i denna Dir packages/frontend/build
+
+# nu i terminalen bygger vi vår docker image;
+#docker build . -f Dockerfile.frontend -t typescript_webbshop
+# och kör koden i docker : docker run -p 3000:3000 --name typescript_webbshop typescript_webbshop
+# name är container namnen som refereras till image som vi har 'build' skapats tidigare (typescript_webbshop)
+# to rename a docker image : docker tag  typescript_webbshop  typescript_chat-app 

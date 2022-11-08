@@ -19,8 +19,6 @@ export const CreateUser = () => {
     setResp(create.data);
   };
 
-  // const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-
   return (
     <div className="createUser">
       <h1> Sign in </h1>
@@ -46,6 +44,7 @@ export const CreateUser = () => {
         <button type="submit"> send </button>
       </form>
       {resp && resp}
+      <button onClick={(e) => navigate("todos")}> go to logIn </button>
     </div>
   );
 };

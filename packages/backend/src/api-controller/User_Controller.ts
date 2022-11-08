@@ -16,7 +16,6 @@ Users_controller.post(
       res.send("skicka giltig data");
     }
   }
-  // }
 );
 
 export default Users_controller;

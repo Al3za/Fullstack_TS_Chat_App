@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { TodoItem } from "@app-todo/shared";
-import { UseGlobalContext } from "../pages/Context_learning";
+import { TodoItem } from "@my-todo-app/shared";
 import { LoginInput } from "./LoginInput";
 
-axios.defaults.baseURL = "http://localhost:3001";
+axios.defaults.baseURL = "http://localhost:3002";
 
 axios.interceptors.request.use((config) => {
   if (!config.headers) {
@@ -49,7 +48,6 @@ const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
 };
 
 const LoadMongoData = () => {
-  const { userName } = UseGlobalContext();
   const [TodoTex, setTodoText] = useState<string>("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [error, setError] = useState<string | undefined>("");
@@ -57,6 +55,8 @@ const LoadMongoData = () => {
 
   useEffect(() => {
     const intervall = setInterval(() => {
+      console.log("hej");
+
       fetchToDos()
         .then(setTodos)
         .catch((err) => {
@@ -73,15 +73,13 @@ const LoadMongoData = () => {
     const hours = now.toLocaleTimeString();
 
     const newTodo: TodoItem = {
-      user: userName,
       text: item,
       datum: datums,
       hour: hours,
       timeStamps: new Date(),
     };
 
-    //console.log(newTodo);
-    const response = await axios.post<TodoItem[]>("/todos", newTodo);
+    const response = await axios.post("/todos", newTodo);
     setTodos(response.data);
   };
 
@@ -94,7 +92,6 @@ const LoadMongoData = () => {
       password: password,
     });
     const token = loginResponse.data;
-    console.log(token, "token here");
     localStorage.setItem("jwt", token);
     setLoggedIn(true);
     setError("");
