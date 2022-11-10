@@ -37,7 +37,6 @@ export default todos_Controller;
 todos_Controller.get(
   "/:todoid",
   async (req: Request, res: Response<TodoItem>) => {
-    console.log(req.params.todoid);
     try {
       res.send(await loadItemById(req.params.todoid));
     } catch (e) {

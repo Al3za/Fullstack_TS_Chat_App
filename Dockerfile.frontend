@@ -14,7 +14,8 @@ RUN npm ci -w packages/frontend
 COPY  ./packages/frontend/ ./packages/frontend/
 COPY ./packages/shared/ ./packages/shared/
 # vi kopierar resten av koden och klistrar igen till docker under en likadan fil namn
-
+ARG REACT_APP_CHATT_API
+ENV APP_CHATT_API=${REACT_APP_CHATT_API}
 RUN npm run build -w packages/frontend
 # vi omvandlar koden från typescript till JavaScript genom att 'builda' ett till react project i Js ("start": "react-scripts start", 'den bygger hela react app'  "build": "react-scripts build")
 

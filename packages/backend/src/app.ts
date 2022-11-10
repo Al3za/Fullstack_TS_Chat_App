@@ -18,6 +18,7 @@ app.use("/todos", todos_Controller);
 app.use("/", Users_controller);
 
 const port: number = parseInt(process.env.SERVER_PORT || "3002");
+
 const mongoUrl: string =
   process.env.SERVER_mongoUrl || "mongodb://localhost:27017/todos";
 

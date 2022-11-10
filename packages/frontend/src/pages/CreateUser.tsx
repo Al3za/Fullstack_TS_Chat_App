@@ -29,9 +29,6 @@ export const CreateUser = () => {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          // pattern="a-zA-Z0-9"
-          // required
-          // title="user ska ha upper and lower case pluss number"
         />
         <br />
         Password{" "}

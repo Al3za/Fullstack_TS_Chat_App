@@ -4,7 +4,7 @@ import axios from "axios";
 import { TodoItem } from "@my-todo-app/shared";
 import { LoginInput } from "./LoginInput";
 
-axios.defaults.baseURL = "http://localhost:3002";
+axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
 
 axios.interceptors.request.use((config) => {
   if (!config.headers) {

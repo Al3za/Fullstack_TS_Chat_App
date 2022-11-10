@@ -47,7 +47,6 @@ export const loginUser = async (
     credentials.password
   );
   if (getUser) {
-    console.log("good user", getUser);
     const token = jsonwebtoken.sign(
       { sub: credentials.username, name: "alex" },
       secret,
