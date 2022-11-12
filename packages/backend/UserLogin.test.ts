@@ -8,15 +8,15 @@ const sen: createUser = {
 };
 describe("login", () => {
   test("check User login", async () => {
-    let testUser = false;
+    let testUserLogin = false;
     // const see = staticsLogin(sen.username, sen.password);
     const check = Mongo_User_Data.find(
       (item: createUser) => item.username === sen.username
     );
     if (check && check.password === sen.password) {
-      testUser = true;
+      testUserLogin = true;
     }
-    expect(testUser).toBeTruthy();
+    expect(testUserLogin).toBeTruthy();
   });
 });
 
