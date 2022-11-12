@@ -4,3 +4,5 @@ module.exports = {
     "@babel/preset-typescript",
   ],
 };
+
+/// babel gör så att jest kan tolka typeScript test, för jest förstår bara vanligt Js kod;
