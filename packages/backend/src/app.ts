@@ -24,5 +24,5 @@ const mongoUrl: string =
 
 app.listen(port, async function () {
   await setUpMongDB(mongoUrl);
-  console.log(`App is listening on port ${port} !`);
+  console.log(`App is listening on port nr ${port} !`);
 });
