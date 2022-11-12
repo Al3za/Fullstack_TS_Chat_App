@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -43,7 +44,8 @@ const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
       </div>
     );
   } else {
-    return <p> 'waiting för todos'</p>;
+    // eslint-disable-next-line react/no-unescaped-entities
+    return <p>'waiting för todos'</p>;
   }
 };
 

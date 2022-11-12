@@ -7,7 +7,8 @@ export type globalContent = {
 
 export const myGlobalContext = createContext<globalContent>({
     userName:'allo',
-    setUser: () => { }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    setUser: () => {}
 });
 
 export const UseGlobalContext =()  => useContext(myGlobalContext);

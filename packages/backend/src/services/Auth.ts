@@ -2,7 +2,6 @@ import { credentials } from "@app-todo/shared";
 import { NextFunction, Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { staticsLogin } from "../models/CreateUserModel";
-require("dotenv").config();
 
 const secret: string = process.env.Token_Secret || "YOURSECRETKEYGOESHERE";
 
