@@ -29,5 +29,5 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: |
-        cd packages/backend
+        cd my-ToDo-App_typeScript/blob/main/packages/backend/UserLogin.test.ts
         npm test
