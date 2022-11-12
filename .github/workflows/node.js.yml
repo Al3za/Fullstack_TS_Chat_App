@@ -28,6 +28,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
-    - run: |
-        cd main/packages/backend/
-        npm test
+    - name: run tests
+      working-directory: ./packages/*
+    - run: npm test
