@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: npm ci -w packages/frontend
-      - run: npm ci -w packages/backend
-      - run: npm run test -w packages/frontend
-      - run: npm run test -w packages/backend
+       - run: npm i
+       - run: |
+         npm run test -w packages/frontend
+         npm run test -w packages/backend
