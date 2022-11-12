@@ -7,7 +7,7 @@ const sen: createUser = {
   password: "zeus",
 };
 describe("login", () => {
-  test("check User login", async () => {
+  test("Check User login", async () => {
     let testUserLogin = false;
     // const see = staticsLogin(sen.username, sen.password);
     const check = Mongo_User_Data.find(
