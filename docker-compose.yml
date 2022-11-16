@@ -24,3 +24,5 @@ services:
     container_name: my-typescript-mongos
     volumes:
       - /data/db
+
+# skriv docker compose up --build i terminalen för att bygga din docker compose

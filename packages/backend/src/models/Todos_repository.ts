@@ -20,11 +20,14 @@ export const loadAllTodoItems = async (): Promise<TodoItem[]> => {
   return await TodoModel.find().sort({ timeStamps: -1 }).exec();
 };
 
-export const saveTodoItem = async (todoItem: TodoItem): Promise<void> => {
+export const saveTodoItem = async (todoItem: TodoItem): Promise<TodoItem> => {
   const newModel = new TodoModel(todoItem);
-  await newModel.save();
+  const saves = await newModel.save();
+  return saves
+  // vi vill tillbaka hela objektet
 };
 
-export const loadTodoItem = async (id: string): Promise<TodoItem | null> => {
-  return await TodoModel.findById(id).exec();
+export const deleteTodoItem = async (id: string): Promise<TodoItem|null> => {
+  const deleted = await TodoModel.findByIdAndDelete(id).exec()
+  return deleted
 };
