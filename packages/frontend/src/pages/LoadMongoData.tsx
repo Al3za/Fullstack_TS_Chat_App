@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { TodoItem } from "@my-todo-app/shared";
 import { LoginInput } from "./LoginInput";
+import {
+  useEventSource,
+  useEventSourceListener,
+} from "@react-nano/use-event-source";
 
 axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
+// const API_ENDPOINT = process.env.APP_CHATT_API || "http://localhost:3002";
 
 axios.interceptors.request.use((config) => {
   if (!config.headers) {
@@ -16,6 +21,8 @@ axios.interceptors.request.use((config) => {
   }
   return config;
 });
+
+const API_ENDPOINT = "http://localhost:3002";
 
 const fetchToDos = async (): Promise<TodoItem[]> => {
   const getTodo = await axios.get<TodoItem[]>("/todos");
@@ -68,10 +75,29 @@ const todosReducer = (state: TodoItem[], action: todoAction) => {
 
 const LoadMongoData = () => {
   const [TodoTex, setTodoText] = useState<string>("");
-  // const [todos, setTodos] = useState<TodoItem[]>([]);
   const [todos, dispatch] = useReducer(todosReducer, []);
   const [error, setError] = useState<string | undefined>("");
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
+  const [eventSource, eventSourceStatus] = useEventSource(
+    `${API_ENDPOINT}/sse`,
+    true
+  );
+
+  useEventSourceListener(
+    eventSource,
+    ["message"],
+    (evt) => {
+      if (evt.type === "message") {
+        const added = JSON.parse(evt.data) as TodoItem;
+        console.log("fick koppling");
+        dispatch({
+          type: "add",
+          data: added,
+        });
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     fetchToDos()
@@ -95,10 +121,6 @@ const LoadMongoData = () => {
       hour: hours,
       timeStamps: new Date(),
     });
-    dispatch({
-      type: "add",
-      data: added,
-    });
   };
 
   const performLogin = async (
@@ -114,8 +136,6 @@ const LoadMongoData = () => {
     localStorage.setItem("jwt", token);
     setLoggedIn(true);
     setError("");
-    // const response = await axios.get<TodoItem[]>("/todos");
-    //setTodos(response.data);
   };
 
   const removeTodo = async (item: TodoItem) => {
