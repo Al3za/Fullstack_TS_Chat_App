@@ -1,6 +1,6 @@
 import { TodoItem } from "@app-todo/shared";
 import express, { Router, Request, Response } from "express";
-import { loadTodos, } from "../services/Todos_services";
+import { loadTodos } from "../services/Todos_services";
 import { deleteTodoItem, saveTodoItem } from "../models/Todos_repository";
 import { JwtRequest } from "../services/Auth";
 
@@ -24,7 +24,7 @@ todos_Controller.post(
       try {
         req.body.user = req.jwt.sub;
         // vi kan ge till en kommander object body request en istans namn som vi önskar. user i detta fall matchar med mongo user modellen, som i sin tur matchar med vår interface todo-item
-        const added = await saveTodoItem(req.body)
+        const added = await saveTodoItem(req.body);
         res.send(added);
       } catch (e) {
         res.sendStatus(404);
@@ -35,16 +35,15 @@ todos_Controller.post(
 
 todos_Controller.get(
   "/:todoid",
-  async (req: Request, res: Response<TodoItem|null>) => {
-    const deleted = await deleteTodoItem(req.params.todoid)
+  async (req: Request, res: Response<TodoItem | null>) => {
+    console.log("hej");
+    const deleted = await deleteTodoItem(req.params.todoid);
     if (deleted) {
-      res.send(deleted)
+      res.send(deleted);
     } else {
-      res.sendStatus(404)
+      res.sendStatus(404);
     }
   }
 );
 
 export default todos_Controller;
-
-

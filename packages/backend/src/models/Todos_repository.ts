@@ -23,11 +23,12 @@ export const loadAllTodoItems = async (): Promise<TodoItem[]> => {
 export const saveTodoItem = async (todoItem: TodoItem): Promise<TodoItem> => {
   const newModel = new TodoModel(todoItem);
   const saves = await newModel.save();
-  return saves
+  return saves;
   // vi vill tillbaka hela objektet
 };
 
-export const deleteTodoItem = async (id: string): Promise<TodoItem|null> => {
-  const deleted = await TodoModel.findByIdAndDelete(id).exec()
-  return deleted
+export const deleteTodoItem = async (id: string): Promise<TodoItem | null> => {
+  const deleted = await TodoModel.findByIdAndDelete(id).exec();
+  console.log(deleted);
+  return deleted;
 };
