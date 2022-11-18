@@ -24,25 +24,23 @@ axios.interceptors.request.use((config) => {
 
 const API_ENDPOINT = "http://localhost:3002";
 
-const fetchToDos = async (): Promise<TodoItem[]> => {
-  const getTodo = await axios.get<TodoItem[]>("/todos");
-  return getTodo.data;
+const fetchToDos = () => {
+  axios.get<TodoItem[]>("/todos", {
+    withCredentials: true,
+  });
+};
+fetchToDos();
+
+const PostTodo = (item: TodoItem) => {
+  axios.post<TodoItem>("/todos", item, {
+    withCredentials: true,
+  });
 };
 
-const PostTodo = async (item: TodoItem): Promise<TodoItem> => {
-  const response = await axios.post<TodoItem>("/todos", item);
-  return response.data;
-};
-
-const deleteTodo = async (
-  item: TodoItem | undefined
-): Promise<TodoItem | null> => {
-  const response = await axios.get<TodoItem>(`/todos/${item?._id}`);
-  if (response.status === 200) {
-    return response.data;
-  } else {
-    return null;
-  }
+const deleteTodo = (item: TodoItem | undefined) => {
+  axios.get<TodoItem>(`/todos/${item?._id}`, {
+    withCredentials: true,
+  });
 };
 
 type todoAction = {
@@ -85,29 +83,38 @@ const LoadMongoData = () => {
 
   useEventSourceListener(
     eventSource,
-    ["message"],
+    ["message", "delmessage", "messages"],
     (evt) => {
       if (evt.type === "message") {
-        const added = JSON.parse(evt.data) as TodoItem;
-        console.log("fick koppling");
+        console.log("you are connected");
+        const addMessage = JSON.parse(evt.data) as TodoItem;
         dispatch({
           type: "add",
-          data: added,
+          data: addMessage,
+        });
+      } else if (evt.type === "delmessage") {
+        console.log("del msg");
+        const deleted = JSON.parse(evt.data) as TodoItem;
+        if (deleted) {
+          dispatch({
+            type: "remove",
+            data: deleted,
+          });
+        }
+      } else if (evt.type === "messages") {
+        console.log("get all messages");
+        const loadAllTodos = JSON.parse(evt.data);
+        dispatch({
+          type: "replaceAll",
+          data: loadAllTodos,
         });
       }
     },
-    []
+    [dispatch]
   );
 
   useEffect(() => {
-    fetchToDos()
-      .then((todos) => {
-        dispatch({
-          type: "replaceAll",
-          data: todos,
-        });
-      })
-      .catch(console.error);
+    fetchToDos();
   }, []);
 
   const addNewTodo = async (TexItem: string) => {
@@ -115,7 +122,7 @@ const LoadMongoData = () => {
     const datums = now.toLocaleDateString(); //string
     const hours = now.toLocaleTimeString();
 
-    const added = await PostTodo({
+    PostTodo({
       text: TexItem,
       datum: datums,
       hour: hours,
@@ -138,16 +145,6 @@ const LoadMongoData = () => {
     setError("");
   };
 
-  const removeTodo = async (item: TodoItem) => {
-    const deleted = await deleteTodo(item);
-    if (deleted) {
-      dispatch({
-        type: "remove",
-        data: item,
-      });
-    }
-  };
-
   const TodoList = ({
     todos,
     error,
@@ -167,7 +164,7 @@ const LoadMongoData = () => {
 
                 <span
                   onClick={(e) => {
-                    if (item._id) removeTodo(item);
+                    if (item._id) deleteTodo(item);
                   }}
                 >
                   Delete?

@@ -11,7 +11,12 @@ todos_Controller.get(
   "/",
   async (req: JwtRequest<TodoItem>, res: Response<TodoItem[]>) => {
     if (req.jwt) {
-      res.send(await loadTodos());
+      const allTodo = await loadTodos();
+      sseClients.forEach((c) => {
+        c.client.write(`event: messages\n`);
+        c.client.write(`data:${JSON.stringify(allTodo)}`);
+        c.client.write(`\n\n`);
+      });
     }
   }
 );
@@ -22,6 +27,7 @@ todos_Controller.post("/", async (req: JwtRequest<TodoItem>, res: Response) => {
   } else {
     try {
       req.body.user = req.jwt.sub;
+      console.log(req.body);
       // vi kan ge till en kommander object body request en istans namn som vi önskar. user i detta fall matchar med mongo user modellen, som i sin tur matchar med vår interface todo-item
       const added = await saveTodoItem(req.body);
       console.log(added);
@@ -31,7 +37,6 @@ todos_Controller.post("/", async (req: JwtRequest<TodoItem>, res: Response) => {
         c.client.write(`data: ${JSON.stringify(added)}`);
         c.client.write(`\n\n`);
       });
-      // res.send(added);
     } catch (e) {
       res.sendStatus(404);
     }
@@ -41,12 +46,14 @@ todos_Controller.post("/", async (req: JwtRequest<TodoItem>, res: Response) => {
 todos_Controller.get(
   "/:todoid",
   async (req: Request, res: Response<TodoItem | null>) => {
-    //console.log("hej");
     const deleted = await deleteTodoItem(req.params.todoid);
     if (deleted) {
-      res.send(deleted);
-    } else {
-      res.sendStatus(404);
+      sseClients.forEach((c) => {
+        console.log("get del msg");
+        c.client.write(`event: delmessage\n`);
+        c.client.write(`data:${JSON.stringify(deleted)}`);
+        c.client.write(`\n\n`);
+      });
     }
   }
 );

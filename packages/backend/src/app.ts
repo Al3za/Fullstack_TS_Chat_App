@@ -55,10 +55,6 @@ app.use("/sse", async (request: Request, response: Response) => {
   };
   sseClients.push(newClient);
 
-  //response.write(`event:messages\n`);
-  //  response.write(`data:${JSON.stringify(messages)}`);
-  // response.write("\n\n")
-
   console.log("got new SSE client", clientRandomId);
 
   request.on("close", () => {
