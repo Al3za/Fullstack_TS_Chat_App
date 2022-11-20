@@ -17,7 +17,9 @@ todos_Controller.get(
         c.client.write(`data:${JSON.stringify(allTodo)}`);
         c.client.write(`\n\n`);
       });
+      res.send();
     }
+    res.send();
   }
 );
 
@@ -37,6 +39,7 @@ todos_Controller.post("/", async (req: JwtRequest<TodoItem>, res: Response) => {
         c.client.write(`data: ${JSON.stringify(added)}`);
         c.client.write(`\n\n`);
       });
+      res.send("");
     } catch (e) {
       res.sendStatus(404);
     }
@@ -54,7 +57,9 @@ todos_Controller.get(
         c.client.write(`data:${JSON.stringify(deleted)}`);
         c.client.write(`\n\n`);
       });
+      res.send();
     }
+    res.send();
   }
 );
 

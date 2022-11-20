@@ -12,12 +12,17 @@ axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
 // const API_ENDPOINT = process.env.APP_CHATT_API || "http://localhost:3002";
 
 axios.interceptors.request.use((config) => {
+  // axios.interceptors.request lägger på funktionalitet som ska ske för varje anrop
+  // så, för varje anrop till server, koden nedan ska ske
   if (!config.headers) {
     config.headers = {};
+    // om vi har inga headers då skapar omvandlar vi headers till en tom object
   }
   const jwt = localStorage.getItem("jwt");
   if (jwt) {
     config.headers["authorization"] = `Bearer ${jwt}`;
+    // annars om vi får en token i vår localstorage, då komer vi få i vår network följande headers
+    // detta headers sedan blir fångad i vår backend för att verifyera att token är rätt.
   }
   return config;
 });
@@ -29,7 +34,6 @@ const fetchToDos = () => {
     withCredentials: true,
   });
 };
-fetchToDos();
 
 const PostTodo = (item: TodoItem) => {
   axios.post<TodoItem>("/todos", item, {
