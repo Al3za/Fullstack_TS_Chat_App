@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { createUser } from "@app-todo/shared";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bcrypt = require("bcrypt");
 
 const UserModel = new Schema({

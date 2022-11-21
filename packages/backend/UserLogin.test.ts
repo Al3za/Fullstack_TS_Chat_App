@@ -1,4 +1,3 @@
-const ale: string = "hej";
 import { staticsLogin } from "./src/models/CreateUserModel";
 import { createUser } from "@app-todo/shared";
 
@@ -20,9 +19,9 @@ describe("login", () => {
   });
 });
 
-const Mongo_User_Data: createUser[] = [
-  {
-    username: "ale",
+const Mongo_User_Data: createUser[] = [ 
+  { 
+    username: "ale" ,
     password: "milo",
   },
   {
@@ -30,7 +29,7 @@ const Mongo_User_Data: createUser[] = [
     password: "zeus",
   },
   {
-    username: "mamma",
+    username: "katy",
     password: "mirko",
   },
 ];
