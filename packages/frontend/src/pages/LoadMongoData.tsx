@@ -54,17 +54,17 @@ const LoadMongoData = () => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    const intervall = setInterval(() => {
-      console.log("hej");
+    //const intervall = setInterval(() => {
+    console.log("hej");
 
-      fetchToDos()
-        .then(setTodos)
-        .catch((err) => {
-          setTodos([]);
-          setError("connot find todos");
-        });
-    }, 2000);
-    return () => clearInterval(intervall);
+    fetchToDos()
+      .then(setTodos)
+      .catch((err) => {
+        setTodos([]);
+        setError("connot find todos");
+      });
+    // }, 2000);
+    // return () => clearInterval(intervall);
   }, []);
 
   const addNewTodo = async (item: string) => {
@@ -79,7 +79,9 @@ const LoadMongoData = () => {
       timeStamps: new Date(),
     };
 
-    const response = await axios.post("/todos", newTodo);
+    const response = await axios.post("/todos", newTodo, {
+      withCredentials: true,
+    });
     setTodos(response.data);
   };
 
@@ -87,10 +89,14 @@ const LoadMongoData = () => {
     username: string,
     password: string
   ): Promise<void> => {
-    const loginResponse = await axios.post("/login", {
-      username: username,
-      password: password,
-    });
+    const loginResponse = await axios.post(
+      "/login",
+      {
+        username: username,
+        password: password,
+      },
+      { withCredentials: true }
+    );
     const token = loginResponse.data;
     localStorage.setItem("jwt", token);
     setLoggedIn(true);

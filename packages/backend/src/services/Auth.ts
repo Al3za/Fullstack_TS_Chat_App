@@ -1,10 +1,11 @@
 import { credentials } from "@app-todo/shared";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response, response, request } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { staticsLogin } from "../models/CreateUserModel";
 require("dotenv").config();
 
 const secret: string = process.env.Token_Secret || "YOURSECRETKEYGOESHERE";
+export const JWT_COOKIE_NAME = "jwt";
 
 export type TokenPayload = {
   sub: string;
@@ -36,11 +37,30 @@ export const AutenticateToken = (
   next();
 };
 
+export const fakeLogin = async (request: Request, response: Response) => {
+  console.log("biscotto test");
+  const token = jsonwebtoken.sign(
+    {
+      sub: "alex",
+      name: "alexo",
+    },
+    secret,
+    {
+      expiresIn: "1h",
+    }
+  );
+  response.cookie(JWT_COOKIE_NAME, token, {
+    expires: new Date(Date.now() + 900000),
+    httpOnly: true,
+  });
+  response.sendStatus(200);
+};
+
 export const loginUser = async (
-  req: JwtRequest<credentials>,
-  res: Response
+  request: JwtRequest<credentials>,
+  response: Response
 ) => {
-  const credentials = req.body;
+  const credentials = request.body;
 
   const getUser = await staticsLogin(
     credentials.username,
@@ -54,9 +74,14 @@ export const loginUser = async (
         expiresIn: "1800s",
       }
     );
-    res.send(token);
+    response.send(token);
+    // response.cookie(JWT_COOKIE_NAME, token, {
+    //   expires: new Date(Date.now() + 900000),
+    //   httpOnly: true,
+    // });
+    response.status(200);
   } else {
-    res.sendStatus(401);
+    response.sendStatus(401);
     //res.sendStatus(401) blockera kädjan i LoadMongoData filen, vid performLogin functionen
   }
 };

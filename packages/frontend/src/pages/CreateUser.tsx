@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Cookies, useCookies } from "react-cookie";
 //import { createUser } from "@app-todo/shared";
 
 export const CreateUser = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [resp, setResp] = useState<string>("");
+  const [cookies, setCookie, removeCookie] = useCookies(["cookie-name"]);
+  console.log(cookies);
 
   const navigate = useNavigate();
 
@@ -19,10 +22,13 @@ export const CreateUser = () => {
     setResp(create.data);
   };
 
+  const fakeLog = () => {
+    axios.post("/fakeLogin", {}, { withCredentials: true });
+  };
+
   return (
     <div className="createUser">
-      <h1> Sign in </h1>
-
+      <h1> Sign in </h1> <span onClick={fakeLog}>test cookis</span>
       <form onSubmit={createUser}>
         Username{" "}
         <input
