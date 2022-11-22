@@ -6,7 +6,7 @@ import Users_controller from "./api-controller/User_Controller";
 import { setUpMongDB } from "./models/Todos_repository";
 import {
   AutenticateToken,
-  fakeLogin,
+  // fakeLogin,
   JWT_COOKIE_NAME,
   loginUser,
 } from "./services/Auth";
@@ -25,17 +25,17 @@ app.use(
 );
 app.use(json());
 
-app.use((request: Request, response: Response, next) => {
-  console.log("got cookie: ", request.cookies[JWT_COOKIE_NAME]);
-  next();
-});
+// app.use((request: Request, response: Response, next) => {
+//   console.log("got cookie: ", request.cookies[JWT_COOKIE_NAME]);
+//   next();
+// });
 
 const port: number = parseInt(process.env.SERVER_PORT || "3002");
 
 const mongoUrl: string =
   process.env.SERVER_mongoUrl || "mongodb://localhost:27017/todos";
 
-app.post("/fakeLogin", fakeLogin);
+//app.post("/fakeLogin", fakeLogin);
 app.post("/login", loginUser);
 app.use("/todos", AutenticateToken);
 app.use("/todos", todos_Controller);

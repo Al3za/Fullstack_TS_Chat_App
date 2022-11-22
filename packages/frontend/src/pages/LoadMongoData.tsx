@@ -6,17 +6,6 @@ import { LoginInput } from "./LoginInput";
 
 axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
 
-axios.interceptors.request.use((config) => {
-  if (!config.headers) {
-    config.headers = {};
-  }
-  const jwt = localStorage.getItem("jwt");
-  if (jwt) {
-    config.headers["authorization"] = `Bearer ${jwt}`;
-  }
-  return config;
-});
-
 const fetchToDos = async (): Promise<TodoItem[]> => {
   const getTodo = await axios.get<TodoItem[]>("/todos");
   return getTodo.data;
@@ -54,17 +43,12 @@ const LoadMongoData = () => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    //const intervall = setInterval(() => {
-    console.log("hej");
-
     fetchToDos()
       .then(setTodos)
       .catch((err) => {
         setTodos([]);
         setError("connot find todos");
       });
-    // }, 2000);
-    // return () => clearInterval(intervall);
   }, []);
 
   const addNewTodo = async (item: string) => {
@@ -89,7 +73,7 @@ const LoadMongoData = () => {
     username: string,
     password: string
   ): Promise<void> => {
-    const loginResponse = await axios.post(
+    await axios.post(
       "/login",
       {
         username: username,
@@ -97,11 +81,11 @@ const LoadMongoData = () => {
       },
       { withCredentials: true }
     );
-    const token = loginResponse.data;
-    localStorage.setItem("jwt", token);
     setLoggedIn(true);
     setError("");
-    const response = await axios.get<TodoItem[]>("/todos");
+    const response = await axios.get<TodoItem[]>("/todos", {
+      withCredentials: true,
+    });
     setTodos(response.data);
   };
 

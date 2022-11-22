@@ -21,11 +21,13 @@ export const AutenticateToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token: string | undefined = req.header("authorization")?.split(" ")[1];
+  // const token: string | undefined = req.headers["authorization"]?.split(" ")[1];
+  const token: string | undefined = req.cookies[JWT_COOKIE_NAME];
+  //console.log(token, "   ale token");
   if (token) {
     try {
       const decoded = jsonwebtoken.verify(token, secret) as TokenPayload;
-      // verify är det du gör i Jwt.io den verifierar att token och secret stämmer.
+      // verify är det du gör i Jwt.io den verifierar att token och secret stämmer. det visar ävend data i clar text som en objekt {}
       req.jwt = decoded;
     } catch (err) {
       return res.sendStatus(403); // bad token
@@ -35,29 +37,11 @@ export const AutenticateToken = (
   }
 
   next();
-};
-
-export const fakeLogin = async (request: Request, response: Response) => {
-  console.log("biscotto test");
-  const token = jsonwebtoken.sign(
-    {
-      sub: "alex",
-      name: "alexo",
-    },
-    secret,
-    {
-      expiresIn: "1h",
-    }
-  );
-  response.cookie(JWT_COOKIE_NAME, token, {
-    expires: new Date(Date.now() + 900000),
-    httpOnly: true,
-  });
-  response.sendStatus(200);
+  // next is onli to be able to get a special request (req.jwt) into another file or into a function below
 };
 
 export const loginUser = async (
-  request: JwtRequest<credentials>,
+  request: Request<credentials>,
   response: Response
 ) => {
   const credentials = request.body;
@@ -74,12 +58,12 @@ export const loginUser = async (
         expiresIn: "1800s",
       }
     );
-    response.send(token);
-    // response.cookie(JWT_COOKIE_NAME, token, {
-    //   expires: new Date(Date.now() + 900000),
-    //   httpOnly: true,
-    // });
-    response.status(200);
+    //response.send(token);
+    response.cookie(JWT_COOKIE_NAME, token, {
+      expires: new Date(Date.now() + 900000),
+      httpOnly: true,
+    });
+    response.sendStatus(200);
   } else {
     response.sendStatus(401);
     //res.sendStatus(401) blockera kädjan i LoadMongoData filen, vid performLogin functionen
