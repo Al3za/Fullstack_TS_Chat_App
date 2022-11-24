@@ -5,14 +5,14 @@ import {
   saveTodoItem,
 } from "../models/Todos_repository";
 
-export const saveTodo = async (ItemsTodo: TodoItem): Promise<TodoItem[]> => {
+export const saveTodo = async (ItemsTodo: TodoItem): Promise<TodoItem> => {
   if (ItemsTodo.text == "" || !ItemsTodo.text) {
     throw new Error("invalid todo ");
   }
 
-  await saveTodoItem(ItemsTodo);
+  return await saveTodoItem(ItemsTodo);
 
-  return await loadAllTodoItems();
+  //return await loadAllTodoItems();
 };
 
 export const loadTodos = async (): Promise<TodoItem[]> => {

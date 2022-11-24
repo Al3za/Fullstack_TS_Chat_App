@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { TodoItem } from "@my-todo-app/shared";
 import { LoginInput } from "./LoginInput";
+import {
+  useEventSource,
+  useEventSourceListener,
+} from "@react-nano/use-event-source";
 
 axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
-
-const fetchToDos = async (): Promise<TodoItem[]> => {
-  const getTodo = await axios.get<TodoItem[]>("/todos");
-  return getTodo.data;
-};
 
 const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
   if (error) {
@@ -36,20 +35,31 @@ const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
   }
 };
 
+type TodoAction = {
+  type: "add" | "remove" | "replaceAll";
+  data: TodoItem | TodoItem[] | "";
+};
+
+const TodosReducer = (state: TodoItem[], action: TodoAction) => {
+  if (action.type === "add") {
+    return [...state, action.data as TodoItem];
+  } else if (action.type === "remove") {
+    const deletedTodo = action.data as TodoItem;
+    return state.filter((item) => {
+      return item._id !== deletedTodo._id;
+    });
+  } else if (action.type === "replaceAll") {
+    return action.data as TodoItem[];
+  } else {
+    throw new Error("");
+  }
+};
+
 const LoadMongoData = () => {
   const [TodoTex, setTodoText] = useState<string>("");
-  const [todos, setTodos] = useState<TodoItem[]>([]);
-  const [error, setError] = useState<string | undefined>("");
+  const [todos, dispatch] = useReducer(TodosReducer, []);
+  const [error, setError] = useState<string>("");
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
-
-  useEffect(() => {
-    fetchToDos()
-      .then(setTodos)
-      .catch((err) => {
-        setTodos([]);
-        setError("connot find todos");
-      });
-  }, []);
 
   const addNewTodo = async (item: string) => {
     const now = new Date();
@@ -63,17 +73,20 @@ const LoadMongoData = () => {
       timeStamps: new Date(),
     };
 
-    const response = await axios.post("/todos", newTodo, {
+    const response = await axios.post<TodoItem>("/todos", newTodo, {
       withCredentials: true,
     });
-    setTodos(response.data);
+    dispatch({
+      type: "add",
+      data: response?.data || "",
+    });
   };
 
   const performLogin = async (
     username: string,
     password: string
   ): Promise<void> => {
-    await axios.post(
+    const logIn = await axios.post(
       "/login",
       {
         username: username,
@@ -81,12 +94,20 @@ const LoadMongoData = () => {
       },
       { withCredentials: true }
     );
+    if (logIn.status === 200) {
+      console.log("hej");
+    }
+    // if resp från data är (400,401,403) koden körs inte vidare
     setLoggedIn(true);
     setError("");
+
     const response = await axios.get<TodoItem[]>("/todos", {
       withCredentials: true,
     });
-    setTodos(response.data);
+    dispatch({
+      type: "replaceAll",
+      data: response.data,
+    });
   };
 
   return (

@@ -17,7 +17,7 @@ todos_Controller.get(
 
 todos_Controller.post(
   "/",
-  async (req: JwtRequest<TodoItem>, res: Response<TodoItem[]>) => {
+  async (req: JwtRequest<TodoItem>, res: Response<TodoItem>) => {
     if (!req.jwt) {
       return;
     } else {
