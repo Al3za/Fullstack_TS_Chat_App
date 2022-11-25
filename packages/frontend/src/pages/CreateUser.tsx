@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Cookies, useCookies } from "react-cookie";
-//import { createUser } from "@app-todo/shared";
 
 export const CreateUser = () => {
   const [username, setUsername] = useState<string>("");

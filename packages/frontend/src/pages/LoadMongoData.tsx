@@ -8,17 +8,6 @@ import {
   useEventSourceListener,
 } from "@react-nano/use-event-source";
 
-axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
-
-const todoDeletByItem = async (item: string | undefined) => {
-  const deleteOne = await axios.get(`/todos/${item}`, {
-    withCredentials: true,
-  });
-  if (deleteOne.status !== 400) {
-    return deleteOne.data;
-  }
-};
-
 type TodoAction = {
   type: "add" | "remove" | "replaceAll";
   data: TodoItem | TodoItem[] | "";
@@ -46,62 +35,43 @@ const LoadMongoData = () => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
   const addNewTodo = async (item: string) => {
-    const now = new Date();
-    const datums = now.toLocaleDateString(); //string
-    const hours = now.toLocaleTimeString();
-
-    const newTodo: TodoItem = {
-      text: item,
-      datum: datums,
-      hour: hours,
-      timeStamps: new Date(),
-    };
-
-    const response = await axios.post<TodoItem>("/todos", newTodo, {
-      withCredentials: true,
-    });
-    dispatch({
-      type: "add",
-      data: response?.data || "",
-    });
+    // const now = new Date();
+    // const datums = now.toLocaleDateString(); //string
+    // const hours = now.toLocaleTimeString();
+    setTodoText("");
+    //add todo
   };
 
   const deleteTodo = async (itemId: string | undefined) => {
-    if (itemId) {
-      const deletedTodo = await todoDeletByItem(itemId);
-      dispatch({
-        type: "remove",
-        data: deletedTodo,
-      });
-    }
+    // remove todo
   };
 
   const performLogin = async (
     username: string,
     password: string
   ): Promise<void> => {
-    const logIn = await axios.post(
-      "/login",
-      {
-        username: username,
-        password: password,
-      },
-      { withCredentials: true }
-    );
-    if (logIn.status === 200) {
-      console.log("hej");
-    }
-    // if resp från data är (400,401,403) koden körs inte vidare
-    setLoggedIn(true);
-    setError("");
-
-    const response = await axios.get<TodoItem[]>("/todos", {
-      withCredentials: true,
-    });
-    dispatch({
-      type: "replaceAll",
-      data: response.data,
-    });
+    // perform login
+    // const logIn = await axios.post(
+    //   "/login",
+    //   {
+    //     username: username,
+    //     password: password,
+    //   },
+    //   { withCredentials: true }
+    // );
+    // if (logIn.status === 200) {
+    //   console.log("hej");
+    // }
+    // // if resp från data är (400,401,403) koden körs inte vidare
+    // setLoggedIn(true);
+    // setError("");
+    // const response = await axios.get<TodoItem[]>("/todos", {
+    //   withCredentials: true,
+    // });
+    // dispatch({
+    //   type: "replaceAll",
+    //   data: response.data,
+    // });
   };
 
   const TodoList = ({
