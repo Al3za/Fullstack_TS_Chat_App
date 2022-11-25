@@ -28,5 +28,7 @@ CMD ["npx","serve","packages/frontend/build"]
 # nu i terminalen bygger vi vår docker image;
 #docker build . -f Dockerfile.frontend -t typescript_webbshop
 # och kör koden i docker : docker run -p 3000:3000 --name typescript_webbshop typescript_webbshop
-# name är container namnen som refereras till image som vi har 'build' skapats tidigare (typescript_webbshop)
+# name är container namnen som refereras till image som vi har 'build'/skapats tidigare (typescript_webbshop)
 # to rename a docker image : docker tag  typescript_webbshop  typescript_chat-app 
+
+# docker compose up --build to build composer

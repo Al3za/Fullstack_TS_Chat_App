@@ -18,7 +18,7 @@ RUN npm run build -w packages/backend
 # vi omvandlar koden från typescript till js. i backend package.json, syftet med "build": "tsc" , är att förvandla ts kode till vanilla js så  att det går att köra appen i node och webbläsaren
 # tsc kompilerar vår Typescript kod till Javascript som Node eller webbläsaren kan köra
 # Typescript kan alltså inte köras direkt i webbläsaren
-# node packages/backend/dist/app.js borde ska nu din backend server;
+# node packages/backend/dist/app.js
 # markera att du kan köra node nu eftersom du kompilerade om ts filar till js
 
 EXPOSE 3002  

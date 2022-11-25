@@ -1,4 +1,4 @@
-import { staticsLogin } from "./src/models/CreateUserModel";
+import { staticsLogin } from "./models/CreateUserModel";
 import { createUser } from "@app-todo/shared";
 
 const sen: createUser = {
@@ -19,9 +19,9 @@ describe("login", () => {
   });
 });
 
-const Mongo_User_Data: createUser[] = [ 
-  { 
-    username: "ale" ,
+const Mongo_User_Data: createUser[] = [
+  {
+    username: "ale",
     password: "milo",
   },
   {
@@ -33,3 +33,21 @@ const Mongo_User_Data: createUser[] = [
     password: "mirko",
   },
 ];
+
+// const mynae = "ale";
+
+// test("gör test", () => {
+//   expect(mynae).toBe("ale");
+// });
+
+// eslint-disable-next-line no-undef
+// module.exports = {
+//   presets: [
+//     ["@babel/preset-env", { targets: { node: "current" } }],
+//     "@babel/preset-typescript",
+//   ],
+// };
+
+// babel.config.js
+
+/// babel gör så att jest kan tolka typeScript test, för jest förstår bara vanligt Js kod;
