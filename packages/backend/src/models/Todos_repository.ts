@@ -32,6 +32,15 @@ export const saveTodoItem = async (todoItem: TodoItem): Promise<TodoItem> => {
   }
 };
 
-export const loadTodoItem = async (id: string): Promise<TodoItem | null> => {
-  return await TodoModel.findById(id).exec();
+export const deleteTodoById = async (
+  todoId: string
+): Promise<TodoItem | null> => {
+  console.log(todoId);
+  const deleted = await TodoModel.findByIdAndDelete({ _id: todoId }).exec();
+  if (deleted) {
+    console.log(deleted);
+    return deleted;
+  } else {
+    throw new Error("not found todo to delete");
+  }
 };

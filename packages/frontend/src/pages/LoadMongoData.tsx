@@ -10,28 +10,12 @@ import {
 
 axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
 
-const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
-  if (error) {
-    return <div>{error}</div>;
-  } else if (todos) {
-    return (
-      <div>
-        {todos.map((item, index) => {
-          return (
-            <div className="render" key={index}>
-              <p>{item.text}</p>
-              <p>{"från : " + item.user}</p>
-              <p>
-                {item.datum} {item.hour}
-              </p>
-              <br />
-            </div>
-          );
-        })}
-      </div>
-    );
-  } else {
-    return <p> 'waiting för todos'</p>;
+const todoDeletByItem = async (item: string | undefined) => {
+  const deleteOne = await axios.get(`/todos/${item}`, {
+    withCredentials: true,
+  });
+  if (deleteOne.status !== 400) {
+    return deleteOne.data;
   }
 };
 
@@ -44,9 +28,9 @@ const TodosReducer = (state: TodoItem[], action: TodoAction) => {
   if (action.type === "add") {
     return [...state, action.data as TodoItem];
   } else if (action.type === "remove") {
-    const deletedTodo = action.data as TodoItem;
+    const deletedTodo = action.data as string;
     return state.filter((item) => {
-      return item._id !== deletedTodo._id;
+      return item._id !== deletedTodo;
     });
   } else if (action.type === "replaceAll") {
     return action.data as TodoItem[];
@@ -82,6 +66,16 @@ const LoadMongoData = () => {
     });
   };
 
+  const deleteTodo = async (itemId: string | undefined) => {
+    if (itemId) {
+      const deletedTodo = await todoDeletByItem(itemId);
+      dispatch({
+        type: "remove",
+        data: deletedTodo,
+      });
+    }
+  };
+
   const performLogin = async (
     username: string,
     password: string
@@ -108,6 +102,38 @@ const LoadMongoData = () => {
       type: "replaceAll",
       data: response.data,
     });
+  };
+
+  const TodoList = ({
+    todos,
+    error,
+  }: {
+    todos: TodoItem[];
+    error?: string;
+  }) => {
+    if (error) {
+      return <div>{error}</div>;
+    } else if (todos) {
+      return (
+        <div>
+          {todos.map((item, index) => {
+            return (
+              <div className="render" key={index}>
+                <p>{item.text}</p>{" "}
+                <span onClick={(e) => deleteTodo(item._id)}>DELETE?</span>
+                <p>{"från : " + item.user}</p>
+                <p>
+                  {item.datum} {item.hour}
+                </p>
+                <br />
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      return <p> 'waiting för todos'</p>;
+    }
   };
 
   return (

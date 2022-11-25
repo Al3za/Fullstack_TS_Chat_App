@@ -1,7 +1,7 @@
 import { TodoItem } from "@app-todo/shared";
 import express, { Router, Request, Response } from "express";
-import { saveTodo, loadTodos, loadItemById } from "../services/Todos_services";
-import { saveTodoItem } from "../models/Todos_repository";
+import { saveTodo, loadTodos } from "../services/Todos_services";
+import { deleteTodoById } from "../models/Todos_repository";
 import { JwtRequest } from "../services/Auth";
 
 const todos_Controller = express.Router();
@@ -32,15 +32,28 @@ todos_Controller.post(
   }
 );
 
-export default todos_Controller;
-
 todos_Controller.get(
-  "/:todoid",
-  async (req: Request, res: Response<TodoItem>) => {
+  "/:todoID",
+  async (req: Request, res: Response<string | null>) => {
+    const idTodo = req.params.todoID;
     try {
-      res.send(await loadItemById(req.params.todoid));
-    } catch (e) {
+      const deleteTodo = await deleteTodoById(idTodo);
+      res.send(deleteTodo?._id);
+    } catch {
       res.sendStatus(400);
     }
   }
 );
+
+export default todos_Controller;
+
+// todos_Controller.get(
+//   "/:todoid",
+//   async (req: Request, res: Response<TodoItem>) => {
+//     try {
+//       res.send(await loadItemById(req.params.todoid));
+//     } catch (e) {
+//       res.sendStatus(400);
+//     }
+//   }
+// );
