@@ -7,7 +7,7 @@ import {
 
 export const saveTodo = async (ItemsTodo: TodoItem): Promise<TodoItem[]> => {
   if (ItemsTodo.text == "" || !ItemsTodo.text) {
-    throw new Error("invalid todo ");
+    throw new Error("invalid text");
   }
 
   await saveTodoItem(ItemsTodo);

@@ -13,11 +13,18 @@ export const CreateUser = () => {
 
   const createUser = async (e: any) => {
     e.preventDefault();
-    const create = await axios.post("/createUser", { username, password });
+    const passw: any = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
+    
+    if (password.match(passw)) {
+      const create = await axios.post("/createUser", { username, password });
     if (create.data === "ok") {
       navigate("/todos");
     }
     setResp(create.data);
+    } else {
+      alert('Please add to password at least 1 number an a symbol')
+    }
+    
   };
 
   return (
@@ -34,7 +41,7 @@ export const CreateUser = () => {
         <br />
         Password{" "}
         <input
-          type="text"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />{" "}

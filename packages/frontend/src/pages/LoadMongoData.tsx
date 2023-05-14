@@ -57,7 +57,7 @@ const LoadMongoData = () => {
 
   useEffect(() => {
     const intervall = setInterval(() => {
-      console.log("hej");
+    //  console.log("hej");
 
       fetchToDos()
         .then(setTodos)
