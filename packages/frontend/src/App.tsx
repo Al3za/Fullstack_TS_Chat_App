@@ -9,7 +9,7 @@ function App() {
     <div>
       <Routes>
         <Route path="/" element={<CreateUser />} />
-        <Route path="/todos" element={<LoadMongoData />} />
+        <Route path="/ChatData" element={<LoadMongoData />} />
       </Routes>
     </div>
   );

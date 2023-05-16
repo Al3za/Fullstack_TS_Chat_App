@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-//import { createUser } from "@app-todo/shared";
 
 export const CreateUser = () => {
   const [username, setUsername] = useState<string>("");
@@ -13,14 +12,16 @@ export const CreateUser = () => {
 
   const createUser = async (e: any) => {
     e.preventDefault();
+
     const passw: any = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,15}$/;
     
     if (password.match(passw)) {
       const create = await axios.post("/createUser", { username, password });
     if (create.data === "ok") {
-      navigate("/todos");
+      navigate("/ChatData");
     }
-    setResp(create.data);
+      setResp(create.data);
+      // .data is how u get data from a axios request.
     } else {
       alert('Please add to password at least 1 number an a symbol')
     }
@@ -49,7 +50,7 @@ export const CreateUser = () => {
         <button type="submit"> send </button>
       </form>
       {resp && resp}
-      <button onClick={(e) => navigate("todos")}> go to logIn </button>
+      <button onClick={(e) => navigate("ChatData")}> go to logIn </button>
     </div>
   );
 };

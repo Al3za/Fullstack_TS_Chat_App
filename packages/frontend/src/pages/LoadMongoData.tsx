@@ -2,8 +2,17 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { TodoItem } from "@my-todo-app/shared";
+// import { ChatItem } from './'
+//  // "shared/src/todo-item.ts";
 import { LoginInput } from "./LoginInput";
+
+ interface ChatItem {
+  user?: string;
+  text: string;
+  datum: string;
+  hour: string;
+  timeStamps: Date;
+}
 
 axios.defaults.baseURL = process.env.APP_CHATT_API || "http://localhost:3002";
 
@@ -16,14 +25,15 @@ axios.interceptors.request.use((config) => {
     config.headers["authorization"] = `Bearer ${jwt}`;
   }
   return config;
-});
+});// varje axios request skapar en tom header object om det inte finns sparat en jwt token i vår localStorage,
+// medan om vi har en token i vår localStorage så skapas en header som innehåller vår token som vi fick från vår backend när vi loggade in.
 
-const fetchToDos = async (): Promise<TodoItem[]> => {
-  const getTodo = await axios.get<TodoItem[]>("/todos");
+const fetchToDos = async (): Promise<ChatItem[]> => {
+  const getTodo = await axios.get<ChatItem[]>("/Chat");
   return getTodo.data;
 };
 
-const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
+const TodoList = ({ todos, error }: { todos: ChatItem[]; error?: string }) => {
   if (error) {
     return <div>{error}</div>;
   } else if (todos) {
@@ -51,7 +61,7 @@ const TodoList = ({ todos, error }: { todos: TodoItem[]; error?: string }) => {
 
 const LoadMongoData = () => {
   const [TodoTex, setTodoText] = useState<string>("");
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [todos, setTodos] = useState<ChatItem[]>([]);
   const [error, setError] = useState<string | undefined>("");
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
 
@@ -67,21 +77,22 @@ const LoadMongoData = () => {
         });
     }, 2000);
     return () => clearInterval(intervall);
-  }, []);
+  }, []);// här anropar vi alla klienternas meddelandet som visar till den klienten som lyckades kogga in
+  // denna function anropas varje 2 sekunder för att se de senaste uppdaeringar
 
   const addNewTodo = async (item: string) => {
     const now = new Date();
     const datums = now.toLocaleDateString(); //string
     const hours = now.toLocaleTimeString();
 
-    const newTodo: TodoItem = {
+    const newTodo: ChatItem = {
       text: item,
       datum: datums,
       hour: hours,
       timeStamps: new Date(),
     };
 
-    const response = await axios.post("/todos", newTodo);
+    const response = await axios.post("/Chat", newTodo);
     setTodos(response.data);
   };
 
@@ -97,7 +108,7 @@ const LoadMongoData = () => {
     localStorage.setItem("jwt", token);
     setLoggedIn(true);
     setError("");
-    const response = await axios.get<TodoItem[]>("/todos");
+    const response = await axios.get<ChatItem[]>("/Chat");
     setTodos(response.data);
   };
 
@@ -115,7 +126,9 @@ const LoadMongoData = () => {
         </div>
       ) : (
         <div className="Logininput">
-          <LoginInput onLogin={performLogin} />
+            <LoginInput onLogin={performLogin} />
+            {/* we pass (username:string,password:string) from onLogin
+              to performLogin whose have the same parameters*/}
         </div>
       )}
       <Link to={"/"}>

@@ -3,7 +3,7 @@ import { useState } from "react";
 
 type LoginInputProps = {
   onLogin: (username: string, password: string) => Promise<void>;
-};
+}; // this line only describes the type of the username and password 
 
 export const LoginInput = (props: LoginInputProps) => {
   
@@ -12,6 +12,7 @@ export const LoginInput = (props: LoginInputProps) => {
 
   const attemptLogin = async () => {
     props.onLogin(username, password);
+    //username and password are of type string
     setUsername("");
     setPassword("");
   };
